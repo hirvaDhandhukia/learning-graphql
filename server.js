@@ -8,6 +8,7 @@ const {
     GraphQLInt,
     GraphQLNonNull
 } = require('graphql')
+const { argsToArgsConfig } = require('graphql/type/definition')
 const app = express()
 
 const authors = [
@@ -102,8 +103,35 @@ const RootQueryType = new GraphQLObjectType ({
     })
 })
 
+const RootMutationType = new GraphQLObjectType({
+    name: 'Mutation',
+    description: 'Root Mutation',
+    fields: () => ({
+        addBook: {
+            type: BookType,
+            description: 'Add a book',
+            args: {
+                name: {type: GraphQLNonNull(GraphQLString)},
+                authorId: {type: GraphQLNonNull(GraphQLInt)}
+            },
+            resolve: (parent, args) => {
+                // so our new book is created with this input values
+                // args basically is a way to fetch the inputted data from the user and store the data in form of object
+                const book = { 
+                    id: books.length + 1, 
+                    name: args.name,
+                    authorId: args.authorId
+                }
+                books.push(book)
+                return book
+            }
+        }
+    })
+})
+
 const schema = new GraphQLSchema({
-    query: RootQueryType
+    query: RootQueryType,
+    mutation: RootMutationType
 })
 
 app.use('/graphql', expressGraphQL({
