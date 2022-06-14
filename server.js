@@ -11,6 +11,7 @@ const {
 const { argsToArgsConfig } = require('graphql/type/definition')
 const app = express()
 
+// database of authors adn books written by them
 const authors = [
 	{ id: 1, name: 'J. K. Rowling' },
 	{ id: 2, name: 'J. R. R. Tolkien' },
